@@ -1,6 +1,10 @@
 ---
 comment: |-
-  This tmLanguage file is for Common Lisp.
+  This tmLanguage file is for Emacs Lisp.
+
+  Based on the excellent Common Lisp grammar from:
+  https://github.com/qingpeng9802/vscode-common-lisp
+
   Map Rule (Common Lisp Token Type | tmLanguage) {
       Accessor: support.function.accessor
       Class: support.class
@@ -30,16 +34,12 @@ comment: |-
   program to process.
 
 fileTypes:
-  - lisp
-  - lsp
-  - l
-  - cl
-  - asd
-  - asdf
+  - el
+  - elc
 foldingStartMarker: \(
 foldingStopMarker: \)
 keyEquivalent: ^~L
-name: Common Lisp
+name: Emacs Lisp
 
 patterns:
   - include: "#comment"

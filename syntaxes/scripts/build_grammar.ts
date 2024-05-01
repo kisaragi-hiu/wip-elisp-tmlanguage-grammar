@@ -3,8 +3,8 @@ import { readFile, writeFile } from "node:fs/promises";
 import { load } from "js-yaml";
 
 const syntaxes_root = "syntaxes/";
-const INPUT_GRAM_PATH = `${syntaxes_root}commonlisp.yaml`;
-const OUTPUT_GRAM_PATH = `${syntaxes_root}commonlisp.tmLanguage.json`;
+const INPUT_GRAM_PATH = `${syntaxes_root}emacslisp.yaml`;
+const OUTPUT_GRAM_PATH = `${syntaxes_root}emacslisp.tmLanguage.json`;
 
 async function buildGrammar(inputFilePath: string, outputFilePath: string) {
   const inputFile = await readFile(inputFilePath, {
