@@ -838,5 +838,5 @@ repository:
           "3":
             name: support.type.package.commonlisp
 
-scopeName: source.commonlisp
-uuid: 18AAF6A7-CE21-47DF-AD06-C066181965B6
+scopeName: source.emacslisp
+uuid: 9b5f02ec-2c86-4b66-813f-031f92417d2d

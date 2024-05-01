@@ -36,11 +36,11 @@ const FUSED_MODE = true;
 
 /** `scopeName` in the grammar file */
 enum GrammarScopeName {
-  lisp = 'source.commonlisp',
+  elisp = "source.emacslisp",
 }
 /** file name of the grammar file */
 const grammarFileNames: Map<GrammarScopeName, string> = new Map([
-  [GrammarScopeName.lisp, 'commonlisp.tmLanguage.json']
+  [GrammarScopeName.elisp, "emacslisp.tmLanguage.json"],
 ]);
 const syntaxes_root = './syntaxes/';
 /** get the path of the grammar file */
