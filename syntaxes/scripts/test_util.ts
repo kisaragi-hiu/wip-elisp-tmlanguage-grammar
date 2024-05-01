@@ -2,6 +2,7 @@ import { promises as fsPromises } from "fs";
 import * as path from "path";
 
 import { generateScopes, getRegistery, GrammarScopeName } from "./gen_record";
+import type { IGrammar } from "vscode-textmate";
 
 const syntaxes_root = "syntaxes/";
 const generatedFolder = `${syntaxes_root}fixtures/generated`;

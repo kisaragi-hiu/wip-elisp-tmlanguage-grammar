@@ -2,6 +2,7 @@ import { readFile, readdir } from "fs/promises";
 import assert from "node:assert";
 import { describe, it } from "node:test";
 import * as path from "path";
+import type { IGrammar } from "vscode-textmate";
 
 import {
   ensureCleanGeneratedFolder,

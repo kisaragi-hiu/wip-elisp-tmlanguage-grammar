@@ -24,11 +24,11 @@
 */
 // Ported from https://github.com/microsoft/TypeScript-TmLanguage/blob/master/tests/build.ts
 
-import { promises as fsPromises } from 'fs';
-import * as path from 'path';
+import { promises as fsPromises } from "fs";
+import * as path from "path";
 
-import oniguruma from 'vscode-oniguruma';
-import vt from 'vscode-textmate';
+import oniguruma from "vscode-oniguruma";
+import vt from "vscode-textmate";
 
 const FUSED_MODE = true;
 
@@ -42,7 +42,7 @@ enum GrammarScopeName {
 const grammarFileNames: Map<GrammarScopeName, string> = new Map([
   [GrammarScopeName.elisp, "emacslisp.tmLanguage.json"],
 ]);
-const syntaxes_root = './syntaxes/';
+const syntaxes_root = "./syntaxes/";
 /** get the path of the grammar file */
 const getGrammarPath = (scopeName: GrammarScopeName) =>
   path.join(syntaxes_root, grammarFileNames.get(scopeName)!);
@@ -52,13 +52,20 @@ const getGrammarPath = (scopeName: GrammarScopeName) =>
 /** get vscode-textmate registry */
 async function getRegistery() {
   // load Oniguruma lib
-  const onigPath = path.resolve('./node_modules/vscode-oniguruma/release/onig.wasm');
+  const onigPath = path.resolve(
+    "./node_modules/vscode-oniguruma/release/onig.wasm",
+  );
   const wasmBin = (await fsPromises.readFile(onigPath)).buffer;
-  const vscodeOnigurumaLib: Promise<vt.IOnigLib> =
-    oniguruma.loadWASM(wasmBin).then(() => {
+  const vscodeOnigurumaLib: Promise<vt.IOnigLib> = oniguruma
+    .loadWASM(wasmBin)
+    .then(() => {
       return {
-        createOnigScanner(patterns) { return new oniguruma.OnigScanner(patterns); },
-        createOnigString(s) { return new oniguruma.OnigString(s); }
+        createOnigScanner(patterns) {
+          return new oniguruma.OnigScanner(patterns);
+        },
+        createOnigString(s) {
+          return new oniguruma.OnigString(s);
+        },
       };
     });
 
@@ -69,10 +76,10 @@ async function getRegistery() {
       if (!path) {
         return null;
       }
-      const content = await fsPromises.readFile(path, { encoding: 'utf-8' });
+      const content = await fsPromises.readFile(path, { encoding: "utf-8" });
       const rawGrammar = vt.parseRawGrammar(content, path);
       return rawGrammar;
-    }
+    },
   });
 }
 
@@ -87,26 +94,34 @@ interface Grammar {
 
 /** get tokens and iterate the ruleStack */
 function tokenizeLine(mainGrammar: Grammar, line: string) {
-  const lineTokens = mainGrammar.grammar.tokenizeLine(line, mainGrammar.ruleStack);
+  const lineTokens = mainGrammar.grammar.tokenizeLine(
+    line,
+    mainGrammar.ruleStack,
+  );
   mainGrammar.ruleStack = lineTokens.ruleStack;
   return lineTokens.tokens;
 }
 
 /** generate the record */
-function writeTokenLine(token: vt.IToken, outputLines: string[], prevScope: string): string {
-  const startingSpaces = ' '.repeat(token.startIndex + 1);
-  const locatingString = '^'.repeat(token.endIndex - token.startIndex);
+function writeTokenLine(
+  token: vt.IToken,
+  outputLines: string[],
+  prevScope: string,
+): string {
+  const startingSpaces = " ".repeat(token.startIndex + 1);
+  const locatingString = "^".repeat(token.endIndex - token.startIndex);
 
   const hasInvalidTokenScopeExtension = (token: vt.IToken) =>
-    token.scopes.some(scope => !scope.endsWith('.commonlisp'));
-  const hasInvalidScopeExtension =
-    hasInvalidTokenScopeExtension(token) ? 'has_INCORRECT_SCOPE_EXTENSION' : '';
+    token.scopes.some((scope) => !scope.endsWith(".commonlisp"));
+  const hasInvalidScopeExtension = hasInvalidTokenScopeExtension(token)
+    ? "has_INCORRECT_SCOPE_EXTENSION"
+    : "";
 
-  const scope = `sc ${token.scopes.slice(1,).join(' ')}${hasInvalidScopeExtension}`; // replace `source.commonlisp` with `sc`
+  const scope = `sc ${token.scopes.slice(1).join(" ")}${hasInvalidScopeExtension}`; // replace `source.commonlisp` with `sc`
 
   // fuse the indicators while getting the same scope
   if (FUSED_MODE && scope === prevScope) {
-    outputLines[outputLines.length - 2] += '^';
+    outputLines[outputLines.length - 2] += "^";
     return scope;
   }
 
@@ -119,7 +134,10 @@ function writeTokenLine(token: vt.IToken, outputLines: string[], prevScope: stri
 }
 
 /** iterate the lines of the text and produce the record */
-function generateScopesWorker(mainGrammar: Grammar, oriLineArr: string[]): string {
+function generateScopesWorker(
+  mainGrammar: Grammar,
+  oriLineArr: string[],
+): string {
   const cleanCodeLines: string[] = [];
   const recordLines: string[] = [];
 
@@ -128,7 +146,7 @@ function generateScopesWorker(mainGrammar: Grammar, oriLineArr: string[]): strin
     cleanCodeLines.push(oriLine);
     recordLines.push(`>${oriLine}`);
 
-    let prevScope = '';
+    let prevScope = "";
     const mainLineTokens = tokenizeLine(mainGrammar, oriLine);
     for (const token of mainLineTokens) {
       // Notice that `\n` is added to every token so lastIndex+1.
@@ -146,20 +164,20 @@ function generateScopesWorker(mainGrammar: Grammar, oriLineArr: string[]): strin
   const result =
     `original file\n` +
     `-----------------------------------\n` +
-    `${cleanCodeLines.join('\n')}` +
+    `${cleanCodeLines.join("\n")}` +
     `\n` +
     `-----------------------------------\n` +
     `\n` +
     `Grammar: ${grammarFileNames.get(mainGrammar.scopeName)!}\n` +
     `-----------------------------------\n` +
-    `${recordLines.join('\n')}`;
+    `${recordLines.join("\n")}`;
   //console.log(result);
   return result;
 }
 
 /** API for turning string into record.
  *  pass vt.IGrammer to avoid loading grammar again.
-*/
+ */
 function generateScopes(text: string, grammar: vt.IGrammar) {
   //const text = await fsPromises.readFile('syntaxes/fixtures/cases/demo.lsp', { encoding: 'utf-8' });
 
@@ -170,18 +188,11 @@ function generateScopes(text: string, grammar: vt.IGrammar) {
     return {
       scopeName: scopeName,
       grammar: grammar,
-      ruleStack: vt.INITIAL
+      ruleStack: vt.INITIAL,
     };
   };
 
-  return generateScopesWorker(
-    initGrammar(GrammarScopeName.lisp),
-    oriLineArr
-  );
+  return generateScopesWorker(initGrammar(GrammarScopeName.lisp), oriLineArr);
 }
 
-export {
-  GrammarScopeName,
-  generateScopes,
-  getRegistery,
-};
+export { GrammarScopeName, generateScopes, getRegistery };
