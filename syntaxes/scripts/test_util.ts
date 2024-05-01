@@ -52,13 +52,10 @@ async function generateAndWrite(
   return [recordName, generatedText];
 }
 
-/**
- * @return {Promise<IGrammar>}
- */
 async function getGrammar() {
-  const grammar = await (await getRegistery()).loadGrammar(
-    GrammarScopeName.lisp,
-  );
+  const grammar = await (
+    await getRegistery()
+  ).loadGrammar(GrammarScopeName.elisp);
   if (grammar === null) {
     throw new TypeError(
       "the loading result of grammar is null, expected vt.IGrammar",

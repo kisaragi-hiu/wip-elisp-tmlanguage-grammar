@@ -1,7 +1,7 @@
+import { describe, it } from "bun:test";
 import assert from "node:assert";
 import { readFile, readdir } from "node:fs/promises";
 import * as path from "node:path";
-import { describe, it } from "node:test";
 import type { IGrammar } from "vscode-textmate";
 
 import {
@@ -33,22 +33,15 @@ async function assertMatchBaseline(recordName: string, generatedText: string) {
 
 function testIfMatchOn(cases: string[], grammar: IGrammar) {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  describe(
-    "generating and comparing records",
-    { concurrency: cases.length },
-    () => {
-      for (const c of cases) {
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        it(`[${c}] record matching`, async () => {
-          const [recordName, generatedText] = await generateAndWrite(
-            c,
-            grammar,
-          );
-          await assertMatchBaseline(recordName, generatedText);
-        });
-      }
-    },
-  );
+  describe("generating and comparing records", () => {
+    for (const c of cases) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      it(`[${c}] record matching`, async () => {
+        const [recordName, generatedText] = await generateAndWrite(c, grammar);
+        await assertMatchBaseline(recordName, generatedText);
+      });
+    }
+  });
 }
 
 async function generateRecordsFor(cases: string[] = []) {
