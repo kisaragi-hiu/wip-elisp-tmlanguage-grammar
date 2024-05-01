@@ -1,9 +1,7 @@
-'use strict';
-
-import { promises as fsPromises } from 'fs';
-import assert from 'node:assert';
-import { describe, it } from 'node:test';
-import * as path from 'path';
+import { readFile, readdir } from "fs/promises";
+import assert from "node:assert";
+import { describe, it } from "node:test";
+import * as path from "path";
 
 import {
   ensureCleanGeneratedFolder,
@@ -11,59 +9,56 @@ import {
   checkFileExists,
   generateAndWrite,
   baselineFolder,
-  casesFolder
-} from './test_util.mjs';
+  casesFolder,
+} from "./test_util";
 
-/**
- * @param {string} recordName
- * @param {string} generatedText
- * @return {Promise<void>}
- */
-async function assertMatchBaseline(recordName, generatedText) {
+async function assertMatchBaseline(recordName: string, generatedText: string) {
   const baselineFile = path.join(baselineFolder, recordName);
 
   if (await checkFileExists(baselineFile)) {
-    const baselineText = await fsPromises.readFile(baselineFile, { encoding: 'utf8' });
+    const baselineText = await readFile(baselineFile, {
+      encoding: "utf8",
+    });
 
-    assert.strictEqual(generatedText, baselineText, `Expected [${recordName}]'s baseline to match.`);
+    assert.strictEqual(
+      generatedText,
+      baselineText,
+      `Expected [${recordName}]'s baseline to match.`,
+    );
   } else {
-    assert(false, 'Baseline not found.');
+    assert(false, "Baseline not found.");
   }
 }
 
-/**
- * @param {string[]} cases
- * @param {IGrammar} grammar
- * @return {void}
- */
-function testIfMatchOn(cases, grammar) {
+function testIfMatchOn(cases: string[], grammar: IGrammar) {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  describe(`generating and comparing records`, { concurrency: cases.length },
+  describe(
+    `generating and comparing records`,
+    { concurrency: cases.length },
     () => {
       for (const c of cases) {
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         it(`[${c}] record matching`, async () => {
-          const [recordName, generatedText] = await generateAndWrite(c, grammar);
+          const [recordName, generatedText] = await generateAndWrite(
+            c,
+            grammar,
+          );
           await assertMatchBaseline(recordName, generatedText);
         });
       }
-    }
+    },
   );
 }
 
-/**
- * @param {string[]} cases
- * @return {Promise<void>}
- */
-async function generateRecordsFor(cases = []) {
-  const allCases = await fsPromises.readdir(casesFolder);
-  let needCases = [];
+async function generateRecordsFor(cases: string[] = []) {
+  const allCases = await readdir(casesFolder);
+  let needCases: string[] = [];
 
   if (cases.length !== 0) {
     const allCasesSet = new Set(allCases);
     // {name: fullNameBase}
     const allCaseNamesMap = new Map();
-    allCases.forEach(c => {
+    allCases.forEach((c) => {
       allCaseNamesMap.set(path.parse(c).name, c);
     });
 
@@ -83,5 +78,3 @@ async function generateRecordsFor(cases = []) {
 }
 
 await generateRecordsFor(process.argv.slice(2));
-
-export { generateRecordsFor };
