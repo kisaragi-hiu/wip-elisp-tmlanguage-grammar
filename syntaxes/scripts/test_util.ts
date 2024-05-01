@@ -1,5 +1,5 @@
-import { promises as fsPromises } from "fs";
-import * as path from "path";
+import { promises as fsPromises } from "node:fs";
+import * as path from "node:path";
 
 import { generateScopes, getRegistery, GrammarScopeName } from "./gen_record";
 import type { IGrammar } from "vscode-textmate";
@@ -56,9 +56,9 @@ async function generateAndWrite(
  * @return {Promise<IGrammar>}
  */
 async function getGrammar() {
-  const grammar = await (
-    await getRegistery()
-  ).loadGrammar(GrammarScopeName.lisp);
+  const grammar = await (await getRegistery()).loadGrammar(
+    GrammarScopeName.lisp,
+  );
   if (grammar === null) {
     throw new TypeError(
       "the loading result of grammar is null, expected vt.IGrammar",

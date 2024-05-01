@@ -1,9 +1,6 @@
 {
   "comment": "This tmLanguage file is for Emacs Lisp.\n\nBased on the excellent Common Lisp grammar from:\nhttps://github.com/qingpeng9802/vscode-common-lisp\n\nMap Rule (Common Lisp Token Type | tmLanguage) {\n    Accessor: support.function.accessor\n    Class: support.class\n    Condition Type: support.type.exception\n    Constant Variable: constant.language\n    Declaration: storage.type.function.declaration\n    Function: support.function.f\n    Local Function: support.function.f\n    Local Macro: storage.type.function.m\n    Macro: storage.type.function.m\n    macro lambda list: keyword.other.lambdalist\n    ordinary lambda list: keyword.other.lambdalist\n    Special Form: storage.type.function.specialform\n    Special Operator: keyword.control\n    Standard Generic Function: support.function.sgf\n    Symbol: storage.type.function.symbol\n    System Class: support.class\n    Type: support.type.t\n    Type Specifier: support.function.typespecifier\n    Variable: variable.other.constant.earmuffsplus string.regexp.earmuffsasterisk\n}\nNote: Alternatives in Regex are ordered by\nreversed alphabetical order to make sure longest match.\n\nWe try not to capture the parentheses as far as possible since\nwe would like to leave the parentheses to other specialized\nprogram to process.",
-  "fileTypes": [
-    "el",
-    "elc"
-  ],
+  "fileTypes": ["el", "elc"],
   "foldingStartMarker": "\\(",
   "foldingStopMarker": "\\)",
   "keyEquivalent": "^~L",

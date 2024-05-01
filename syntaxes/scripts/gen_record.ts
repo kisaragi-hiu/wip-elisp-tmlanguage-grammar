@@ -24,8 +24,8 @@
 */
 // Ported from https://github.com/microsoft/TypeScript-TmLanguage/blob/master/tests/build.ts
 
-import { promises as fsPromises } from "fs";
-import * as path from "path";
+import { promises as fsPromises } from "node:fs";
+import * as path from "node:path";
 
 import oniguruma from "vscode-oniguruma";
 import vt from "vscode-textmate";
@@ -45,7 +45,7 @@ const grammarFileNames: Map<GrammarScopeName, string> = new Map([
 const syntaxes_root = "./syntaxes/";
 /** get the path of the grammar file */
 const getGrammarPath = (scopeName: GrammarScopeName) =>
-  path.join(syntaxes_root, grammarFileNames.get(scopeName)!);
+  path.join(syntaxes_root, grammarFileNames.get(scopeName) as string);
 
 // Part 2: get vscode-textmate registry
 
@@ -71,7 +71,7 @@ async function getRegistery() {
 
   return new vt.Registry({
     onigLib: vscodeOnigurumaLib,
-    loadGrammar: async function (scopeName: GrammarScopeName) {
+    loadGrammar: async (scopeName: GrammarScopeName) => {
       const path = getGrammarPath(scopeName);
       if (!path) {
         return null;
@@ -117,7 +117,9 @@ function writeTokenLine(
     ? "has_INCORRECT_SCOPE_EXTENSION"
     : "";
 
-  const scope = `sc ${token.scopes.slice(1).join(" ")}${hasInvalidScopeExtension}`; // replace `source.commonlisp` with `sc`
+  const scope = `sc ${token.scopes
+    .slice(1)
+    .join(" ")}${hasInvalidScopeExtension}`; // replace `source.commonlisp` with `sc`
 
   // fuse the indicators while getting the same scope
   if (FUSED_MODE && scope === prevScope) {
@@ -161,16 +163,16 @@ function generateScopesWorker(
     }
   }
 
-  const result =
-    `original file\n` +
-    `-----------------------------------\n` +
-    `${cleanCodeLines.join("\n")}` +
-    `\n` +
-    `-----------------------------------\n` +
-    `\n` +
-    `Grammar: ${grammarFileNames.get(mainGrammar.scopeName)!}\n` +
-    `-----------------------------------\n` +
-    `${recordLines.join("\n")}`;
+  const result = `original file
+-----------------------------------
+${cleanCodeLines.join("\n")}
+
+-----------------------------------
+
+Grammar: ${grammarFileNames.get(mainGrammar.scopeName)}
+
+-----------------------------------
+${recordLines.join("\n")}`;
   //console.log(result);
   return result;
 }
@@ -192,7 +194,7 @@ function generateScopes(text: string, grammar: vt.IGrammar) {
     };
   };
 
-  return generateScopesWorker(initGrammar(GrammarScopeName.lisp), oriLineArr);
+  return generateScopesWorker(initGrammar(GrammarScopeName.elisp), oriLineArr);
 }
 
 export { GrammarScopeName, generateScopes, getRegistery };

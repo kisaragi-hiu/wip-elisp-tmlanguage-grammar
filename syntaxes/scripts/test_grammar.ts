@@ -1,16 +1,16 @@
-import { readFile, readdir } from "fs/promises";
 import assert from "node:assert";
+import { readFile, readdir } from "node:fs/promises";
+import * as path from "node:path";
 import { describe, it } from "node:test";
-import * as path from "path";
 import type { IGrammar } from "vscode-textmate";
 
 import {
-  ensureCleanGeneratedFolder,
-  getGrammar,
-  checkFileExists,
-  generateAndWrite,
   baselineFolder,
   casesFolder,
+  checkFileExists,
+  ensureCleanGeneratedFolder,
+  generateAndWrite,
+  getGrammar,
 } from "./test_util";
 
 async function assertMatchBaseline(recordName: string, generatedText: string) {
@@ -34,7 +34,7 @@ async function assertMatchBaseline(recordName: string, generatedText: string) {
 function testIfMatchOn(cases: string[], grammar: IGrammar) {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
   describe(
-    `generating and comparing records`,
+    "generating and comparing records",
     { concurrency: cases.length },
     () => {
       for (const c of cases) {
@@ -59,9 +59,9 @@ async function generateRecordsFor(cases: string[] = []) {
     const allCasesSet = new Set(allCases);
     // {name: fullNameBase}
     const allCaseNamesMap = new Map();
-    allCases.forEach((c) => {
+    for (const c of allCases) {
       allCaseNamesMap.set(path.parse(c).name, c);
-    });
+    }
 
     for (const c of cases) {
       if (allCasesSet.has(c)) {
