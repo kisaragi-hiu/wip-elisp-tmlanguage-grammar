@@ -31,9 +31,11 @@ original file
           (xectorp xapping)))
 
 (defun f (n) (format nil "~@(~R~) error~:P detected." n)) 
+
 -----------------------------------
 
-Grammar: commonlisp.tmLanguage.json
+Grammar: emacslisp.tmLanguage.json
+
 -----------------------------------
 >(defun print-xapping (xapping stream depth) 
  ^

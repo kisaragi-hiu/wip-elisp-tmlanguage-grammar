@@ -29,9 +29,11 @@ original file
         do (format t "       ~S~%" spec)))
 
 
+
 -----------------------------------
 
-Grammar: commonlisp.tmLanguage.json
+Grammar: emacslisp.tmLanguage.json
+
 -----------------------------------
 >;; demo code
  ^

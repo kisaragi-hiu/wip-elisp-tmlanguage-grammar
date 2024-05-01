@@ -1,8 +1,8 @@
 build:
 	bun syntaxes/scripts/build_grammar.ts
 
-test:
-	bun syntaxes/scripts/test_grammar.ts
+test: build
+	bun test
 
 diff:
 	diff syntaxes/fixtures/baselines syntaxes/fixtures/generated

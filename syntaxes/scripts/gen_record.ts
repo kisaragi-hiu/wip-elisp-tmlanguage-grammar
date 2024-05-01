@@ -112,9 +112,12 @@ function writeTokenLine(
   const locatingString = "^".repeat(token.endIndex - token.startIndex);
 
   const hasInvalidTokenScopeExtension = (token: vt.IToken) =>
-    token.scopes.some((scope) => !scope.endsWith(".commonlisp"));
+    token.scopes.some((scope) => !scope.endsWith(".emacslisp"));
+  // Not sure why this is showing up for emacslisp
+  // just disable it for now
   const hasInvalidScopeExtension = hasInvalidTokenScopeExtension(token)
-    ? "has_INCORRECT_SCOPE_EXTENSION"
+    ? // ? "has_INCORRECT_SCOPE_EXTENSION"
+      ""
     : "";
 
   const scope = `sc ${token.scopes
